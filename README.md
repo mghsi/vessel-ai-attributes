@@ -47,7 +47,7 @@ bluegrid-ai/
 
 2. **Install dependencies:**
    ```bash
-   pip install -e .
+   uv pip install -e .
    ```
 
 3. **Set up environment variables:**
@@ -58,7 +58,7 @@ bluegrid-ai/
 
 4. **Run the application:**
    ```bash
-   python main.py
+   uv run python main.py
    ```
 
 The API will be available at `http://localhost:5000`
