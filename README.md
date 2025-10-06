@@ -1,54 +1,86 @@
-# Boat Analyzer API - Proof of Concept
+# 🚤 Boat Analyzer AI - Full Stack Application
 
-An AI-powered Flask application that analyzes boat images to determine characteristics like type, dimensions, and usage details using GitHub Models API.
+AI-powered boat image analysis service with Vue.js frontend and Flask backend using GitHub Models API.
 
-## Features
+## 🌟 Features
 
-- **Image Analysis**: Upload boat images for AI-powered analysis
+### Frontend (Vue.js)
+- **Modern Web Interface**: Responsive Vue.js 3 application with beautiful UI
+- **Drag & Drop Upload**: Intuitive image upload with preview
+- **Real-time Analysis**: Live feedback and loading states
+- **Detailed Results**: Visual display of analysis results with icons and badges
+- **Mobile Responsive**: Works seamlessly on desktop and mobile devices
+
+### Backend (Flask API)
+- **AI-Powered Analysis**: Uses GitHub Models API for boat image analysis
 - **Boat Classification**: Categorizes boats into types (Flat Bottom, Multi-hull, Pontoon, RHIB, Semi-Displacement, V-Bottom)
 - **Dimension Estimation**: Provides length, width, and beam measurements in feet
 - **Usage Detection**: Determines commercial vs recreational use and auxiliary features
 - **RESTful API**: Clean REST endpoints for integration
+- **CORS Enabled**: Configured for frontend communication
 - **Error Handling**: Comprehensive error handling with structured responses
+
+### Development
+- **Docker Support**: Full containerized development environment
+- **Hot Reload**: Both frontend and backend support live reloading
 - **No Database**: Simplified proof-of-concept without persistence
 
-## Architecture
+## 🏗️ Architecture
 
-The application follows the **MVC (Model-View-Controller)** pattern with clean code principles:
+Full-stack application with separated frontend and backend:
 
 ```
-bluegrid-ai/
-├── app/
-│   ├── controllers/           # Business logic controllers
-│   ├── models/               # Data models (no database)
-│   ├── services/             # Service layer for external APIs
-│   ├── views/                # API routes and blueprints
-│   └── app_factory.py        # Flask application factory
-├── config/
-│   └── config.py             # Configuration management
-├── uploads/                  # Image upload directory
-├── main.py                   # Application entry point
-└── pyproject.toml            # Project dependencies
+vessel-ai/
+├── backend/                   # Flask API Server
+│   ├── app/
+│   │   ├── controllers/      # Business logic controllers
+│   │   ├── models/          # Data models (no database)
+│   │   ├── services/        # Service layer for external APIs
+│   │   ├── views/           # API routes and blueprints
+│   │   └── app_factory.py   # Flask application factory
+│   ├── config/              # Configuration management
+│   ├── uploads/             # Image upload directory
+│   ├── main.py              # Application entry point
+│   └── pyproject.toml       # Python dependencies
+├── frontend/                 # Vue.js Web Application
+│   ├── src/
+│   │   ├── components/      # Vue components
+│   │   ├── services/        # API client services
+│   │   ├── App.vue          # Main application component
+│   │   └── main.js          # Application entry point
+│   ├── public/              # Static assets
+│   └── package.json         # Node.js dependencies
+├── docker-compose.yml        # Development environment
+├── Dockerfile               # Backend container image
+└── .env.docker              # Environment configuration
 ```
 
-## Quick Start
+## 🚀 Quick Start
 
 ### Prerequisites
 
-- Python 3.10+
+- Docker and Docker Compose
 - GitHub Personal Access Token with Models API access
 
-### Installation
+### Development Setup
 
-1. **Clone and navigate to the project:**
+1. **Clone and configure environment:**
    ```bash
-   cd bluegrid-ai
+   git clone <repository-url>
+   cd vessel-ai
+   cp backend/example.env .env.docker
+   # Edit .env.docker and add your GitHub PAT
    ```
 
-2. **Install dependencies:**
+2. **Start the development environment:**
    ```bash
-   uv pip install -e .
+   docker-compose up --build
    ```
+
+3. **Access the application:**
+   - **Frontend Web App**: http://localhost:8080
+   - **Backend API**: http://localhost:5001
+   - **Health Check**: http://localhost:5001/api/v1/health
 
 3. **Set up environment variables:**
    ```bash
