@@ -1,27 +1,56 @@
 <template>
   <div id="app">
     <header class="app-header">
-      <h1>🚤 Boat Analyzer AI</h1>
-      <p>AI-powered boat image analysis for type, dimensions, and usage detection</p>
+      <h1>🚤 Vessel AI - Baseline Profiling System</h1>
+      <p>Multi-agent AI system for comprehensive vessel baseline profiling and analytics</p>
+      
+      <!-- Mode Selector -->
+      <div class="mode-selector">
+        <button 
+          @click="currentMode = 'simple'"
+          :class="{ active: currentMode === 'simple' }"
+          class="mode-btn"
+        >
+          🔍 Simple Analysis
+        </button>
+        <button 
+          @click="currentMode = 'agentic'"
+          :class="{ active: currentMode === 'agentic' }"
+          class="mode-btn"
+        >
+          🤖 Agentic Workflow
+        </button>
+      </div>
     </header>
     
     <main class="main-content">
-      <BoatAnalyzer />
+      <!-- Simple Analysis Mode -->
+      <BoatAnalyzer v-if="currentMode === 'simple'" />
+      
+      <!-- Agentic Workflow Mode -->
+      <AgenticWorkflow v-if="currentMode === 'agentic'" />
     </main>
     
     <footer class="app-footer">
-      <p>&copy; 2025 BlueGrid Vessel AI - Proof of Concept</p>
+      <p>&copy; 2025 BlueGrid Vessel AI - Advanced Baseline Profiling System</p>
     </footer>
   </div>
 </template>
 
 <script>
 import BoatAnalyzer from './components/BoatAnalyzer.vue'
+import AgenticWorkflow from './components/AgenticWorkflow.vue'
 
 export default {
   name: 'App',
   components: {
-    BoatAnalyzer
+    BoatAnalyzer,
+    AgenticWorkflow
+  },
+  data() {
+    return {
+      currentMode: 'agentic' // Default to the new agentic workflow
+    }
   }
 }
 </script>
@@ -58,6 +87,40 @@ export default {
 .app-header p {
   font-size: 1.1rem;
   color: #7f8c8d;
+  margin-bottom: 1.5rem;
+}
+
+.mode-selector {
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.mode-btn {
+  background: rgba(255, 255, 255, 0.8);
+  border: 2px solid #dee2e6;
+  padding: 0.75rem 1.5rem;
+  border-radius: 25px;
+  font-size: 1rem;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  color: #495057;
+}
+
+.mode-btn:hover {
+  background: rgba(255, 255, 255, 1);
+  border-color: #667eea;
+  transform: translateY(-2px);
+  box-shadow: 0 5px 15px rgba(102, 126, 234, 0.2);
+}
+
+.mode-btn.active {
+  background: linear-gradient(45deg, #667eea, #764ba2);
+  color: white;
+  border-color: transparent;
+  box-shadow: 0 5px 15px rgba(102, 126, 234, 0.3);
 }
 
 .main-content {
