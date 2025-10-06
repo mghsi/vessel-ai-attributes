@@ -180,3 +180,5 @@ api_keys.txt
 
 # UV specific
 .uv/
+
+.env.docker
