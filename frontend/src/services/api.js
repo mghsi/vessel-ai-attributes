@@ -4,9 +4,7 @@ import axios from 'axios'
 const api = axios.create({
     baseURL: process.env.VUE_APP_API_URL || 'http://localhost:5001',
     timeout: 30000, // 30 seconds timeout for image analysis
-    headers: {
-        'Content-Type': 'multipart/form-data'
-    }
+    // Don't set default Content-Type - let axios set it per request
 })
 
 // Request interceptor
@@ -74,81 +72,64 @@ export const apiEndpoints = {
 
 // Health check function
 export const checkHealth = async () => {
-    try {
-        const response = await api.get(apiEndpoints.health)
-        return response.data
-    } catch (error) {
-        throw error
-    }
+    const response = await api.get(apiEndpoints.health)
+    return response.data
 }
 
 // Analyze boat image function
 export const analyzeBoat = async (formData) => {
-    try {
-        const response = await api.post(apiEndpoints.analyze, formData, {
-            headers: {
-                'Content-Type': 'multipart/form-data'
-            }
-        })
-        return response.data
-    } catch (error) {
-        throw error
-    }
+    const response = await api.post(apiEndpoints.analyze, formData, {
+        headers: {
+            'Content-Type': 'multipart/form-data'
+        }
+    })
+    return response.data
 }
 
 // Agentic Workflow Functions
 
 // Start a new agentic workflow
 export const startAgenticWorkflow = async (workflowData) => {
-    try {
-        const response = await api.post(apiEndpoints.workflowStart, workflowData, {
-            headers: {
-                'Content-Type': 'application/json'
-            }
-        })
-        return response.data
-    } catch (error) {
-        throw error
-    }
+    const response = await api.post(apiEndpoints.workflowStart, workflowData, {
+        headers: {
+            'Content-Type': 'application/json'
+        }
+    })
+    return response.data
 }
 
 // Execute next step in workflow
 export const executeWorkflowStep = async (sessionId) => {
-    try {
-        const response = await api.post(apiEndpoints.workflowStep, { session_id: sessionId }, {
-            headers: {
-                'Content-Type': 'application/json'
-            }
-        })
-        return response.data
-    } catch (error) {
-        throw error
-    }
+    const response = await api.post(apiEndpoints.workflowStep, { session_id: sessionId }, {
+        headers: {
+            'Content-Type': 'application/json'
+        }
+    })
+    return response.data
 }
 
 // Get workflow status
 export const getWorkflowStatus = async (sessionId) => {
-    try {
-        const response = await api.get(`${apiEndpoints.workflowStatus}?session_id=${sessionId}`)
-        return response.data
-    } catch (error) {
-        throw error
-    }
+    const response = await api.get(`${apiEndpoints.workflowStatus}?session_id=${sessionId}`)
+    return response.data
 }
 
 // Execute complete workflow from start to finish
 export const executeFullWorkflow = async (workflowData) => {
-    try {
-        const response = await api.post(apiEndpoints.workflowExecute, workflowData, {
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            timeout: 120000 // 2 minutes timeout for full workflow
-        })
-        return response.data
-    } catch (error) {
-        throw error
-    }
+    const response = await api.post(apiEndpoints.workflowExecute, workflowData, {
+        headers: {
+            'Content-Type': 'application/json'
+        }
+    })
+    return response.data
+}
+
+// Download performance curves CSV
+export const downloadPerformanceCsv = async (sessionId) => {
+    const response = await api.get(`/api/v1/workflow/performance-curves/download?session_id=${sessionId}`, {
+        responseType: 'blob'
+    })
+    return response.data
 }
 
 export default api

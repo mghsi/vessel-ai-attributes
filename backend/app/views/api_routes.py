@@ -118,3 +118,15 @@ def execute_full_workflow():
     Returns the complete results of all workflow steps
     """
     return AgenticWorkflowController.execute_full_workflow()
+
+
+@api_bp.route('/workflow/performance-curves/download', methods=['GET'])
+def download_performance_curves():
+    """
+    Download performance curves as CSV
+    
+    Query parameters:
+    - session_id: The workflow session ID
+    - format: CSV format type ('holtrop-mennen' or 'simple')
+    """
+    return AgenticWorkflowController.download_performance_csv()

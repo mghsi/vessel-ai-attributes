@@ -7,7 +7,7 @@ Handles API endpoints for the multi-agent boat profiling workflow system.
 import logging
 import asyncio
 from functools import wraps
-from flask import request, jsonify, current_app
+from flask import request, jsonify, current_app, Response
 from app.services.agentic_workflow import WorkflowOrchestrator
 
 logger = logging.getLogger(__name__)
@@ -251,6 +251,77 @@ class AgenticWorkflowController:
             return jsonify({
                 'error': 'Failed to execute full workflow',
                 'code': 'SYS004',
+                'details': str(e)
+            }), 500
+
+    @staticmethod
+    @async_route
+    async def download_performance_csv():
+        """Download performance curves as CSV file"""
+        try:
+            session_id = request.args.get('session_id')
+            format_type = request.args.get('format', 'holtrop-mennen')
+            
+            if not session_id:
+                return jsonify({
+                    'error': 'Session ID is required',
+                    'code': 'REQ001'
+                }), 400
+            
+            # Get GitHub settings
+            github_pat = current_app.config.get('GITHUB_PAT')
+            api_url = current_app.config.get('GITHUB_MODELS_API_URL')
+            model = current_app.config.get('GITHUB_MODELS_MODEL')
+            
+            orchestrator = WorkflowOrchestrator(github_pat, api_url, model)
+            
+            # Get workflow status and check if PerformanceCurveGenerator completed
+            workflow_status = orchestrator.get_workflow_status(session_id)
+            
+            if not workflow_status or workflow_status.get('status') == 'not_found':
+                return jsonify({
+                    'error': 'Workflow session not found',
+                    'code': 'SESS001'
+                }), 404
+            
+            # Check if performance curves are available
+            agent_results = workflow_status.get('agent_results', {})
+            perf_agent_result = agent_results.get('PerformanceCurveGenerator', {})
+            
+            if not perf_agent_result or perf_agent_result.get('status') != 'success':
+                return jsonify({
+                    'error': 'Performance curves not available. Run workflow first.',
+                    'code': 'WORK001'
+                }), 400
+            
+            # Get CSV data
+            csv_data = perf_agent_result.get('csv_data')
+            
+            if not csv_data:
+                return jsonify({
+                    'error': 'CSV data not available',
+                    'code': 'DATA001'
+                }), 404
+            
+            # Create response with proper headers for CSV download
+            filename = f"vessel_performance_curves_{session_id[:8]}.csv"
+            
+            response = Response(
+                csv_data,
+                mimetype='text/csv',
+                headers={
+                    'Content-Disposition': f'attachment; filename={filename}',
+                    'Content-Type': 'text/csv; charset=utf-8'
+                }
+            )
+            
+            return response
+            
+        except Exception as e:
+            logger.error(f"Error downloading performance CSV: {str(e)}")
+            return jsonify({
+                'error': 'Failed to download performance curves',
+                'code': 'SYS005',
                 'details': str(e)
             }), 500
 

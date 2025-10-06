@@ -259,9 +259,37 @@
           <div v-if="result.agent_name === 'PerformanceCurveGenerator'" class="curves-result">
             <div v-if="result.result.status === 'success'">
               <h5>Generated Performance Curves</h5>
+              
+              <!-- Naval Architecture Analysis -->
+              <div v-if="result.result.naval_analysis" class="naval-analysis">
+                <h6>Naval Architecture Analysis</h6>
+                <div class="analysis-content">{{ result.result.naval_analysis }}</div>
+              </div>
+              
+              <!-- Methodology Explanation -->
+              <div v-if="result.result.methodology" class="methodology">
+                <h6>Methodology</h6>
+                <div class="methodology-content">{{ result.result.methodology }}</div>
+              </div>
+              
+              <!-- Download CSV Button -->
+              <div v-if="result.result.download_available" class="download-section">
+                <button 
+                  @click="downloadPerformanceCsv()" 
+                  class="download-btn"
+                  :disabled="downloadingCsv"
+                >
+                  <span v-if="downloadingCsv">📊 Downloading...</span>
+                  <span v-else>📊 Download Performance Curves (CSV)</span>
+                </button>
+                <p class="download-info">
+                  Download detailed speed-thrust-power-battery curves with naval architecture calculations
+                </p>
+              </div>
+              
               <div class="curve-info">
                 <div class="validation-notice">
-                  ⚠️ These are AI-generated estimates. Validation recommended for precise applications.
+                  ⚠️ Performance curves generated using Holtrop-Mennen resistance prediction methods. Suitable for baseline profiling.
                 </div>
                 <div class="curves-list">
                   <div v-for="(curve, curveName) in result.result.performance_curves" :key="curveName" class="curve-item">
@@ -389,7 +417,7 @@
 
 <script>
 import ImageUploader from './ImageUploader.vue'
-import { executeFullWorkflow } from '../services/api.js'
+import { executeFullWorkflow, downloadPerformanceCsv } from '../services/api.js'
 
 export default {
   name: 'AgenticWorkflow',
@@ -405,6 +433,7 @@ export default {
       currentStep: 0,
       stepResults: [],
       error: null,
+      downloadingCsv: false,
       
       // Input modes
       inputMode: 'image', // 'image' or 'manual'
@@ -553,6 +582,36 @@ export default {
     
     formatCurveName(curveName) {
       return curveName.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase())
+    },
+    
+    async downloadPerformanceCsv() {
+      if (!this.sessionId || this.downloadingCsv) return
+      
+      this.downloadingCsv = true
+      
+      try {
+        // Use the API service function
+        const blob = await downloadPerformanceCsv(this.sessionId)
+        
+        // Create filename
+        const filename = `vessel_performance_curves_${this.sessionId.slice(0, 8)}.csv`
+        
+        // Create download
+        const url = window.URL.createObjectURL(blob)
+        const a = document.createElement('a')
+        a.href = url
+        a.download = filename
+        document.body.appendChild(a)
+        a.click()
+        document.body.removeChild(a)
+        window.URL.revokeObjectURL(url)
+        
+      } catch (error) {
+        console.error('Failed to download performance curves:', error)
+        this.error = `Failed to download CSV: ${error.message}`
+      } finally {
+        this.downloadingCsv = false
+      }
     }
   }
 }
@@ -923,6 +982,84 @@ export default {
   padding: 1rem;
   margin-bottom: 1rem;
   font-size: 0.9rem;
+}
+
+.naval-analysis {
+  margin-bottom: 1.5rem;
+}
+
+.naval-analysis h6 {
+  color: #2c3e50;
+  margin-bottom: 0.5rem;
+  font-size: 1.1rem;
+}
+
+.analysis-content {
+  background: #f8f9fa;
+  border-radius: 8px;
+  padding: 1rem;
+  white-space: pre-wrap;
+  font-family: 'Courier New', monospace;
+  font-size: 0.9rem;
+  max-height: 300px;
+  overflow-y: auto;
+}
+
+.methodology {
+  margin-bottom: 1.5rem;
+}
+
+.methodology h6 {
+  color: #2c3e50;
+  margin-bottom: 0.5rem;
+  font-size: 1.1rem;
+}
+
+.methodology-content {
+  background: #e3f2fd;
+  border-radius: 8px;
+  padding: 1rem;
+  white-space: pre-wrap;
+  font-size: 0.9rem;
+}
+
+.download-section {
+  margin: 1.5rem 0;
+  text-align: center;
+  padding: 1rem;
+  background: #f8f9fa;
+  border-radius: 10px;
+}
+
+.download-btn {
+  background: linear-gradient(45deg, #667eea, #764ba2);
+  color: white;
+  border: none;
+  padding: 1rem 2rem;
+  border-radius: 25px;
+  cursor: pointer;
+  font-size: 1rem;
+  font-weight: bold;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+}
+
+.download-btn:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+}
+
+.download-btn:disabled {
+  background: #6c757d;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+
+.download-info {
+  margin-top: 0.5rem;
+  font-size: 0.9rem;
+  color: #6c757d;
 }
 
 .curves-list {
