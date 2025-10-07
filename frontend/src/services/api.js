@@ -62,7 +62,7 @@ api.interceptors.response.use(
 export const apiEndpoints = {
     health: '/api/v1/health',
     analyze: '/api/v1/analyze',
-    
+
     // Agentic Workflow endpoints
     workflowStart: '/api/v1/workflow/start',
     workflowStep: '/api/v1/workflow/step',
