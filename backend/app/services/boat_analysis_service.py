@@ -57,7 +57,7 @@ class BoatAnalysisService:
         }
 
     def analyze_boat(
-        self, image_base64: str, boat_brand: str, boat_model: str
+        self, image_base64: str, boat_brand: str = "", boat_model: str = ""
     ) -> Dict[str, Any]:
         """Analyze boat image using AI model"""
         try:
@@ -88,13 +88,16 @@ class BoatAnalysisService:
 
     def _build_analysis_prompt(self, boat_brand: str, boat_model: str) -> str:
         """Build the analysis prompt for the AI model"""
+        brand_info = f"Boat Brand: {boat_brand}" if boat_brand else "Boat Brand: Unknown"
+        model_info = f"Boat Model: {boat_model}" if boat_model else "Boat Model: Unknown"
+        
         return f"""
-Analyze the provided image of a boat along with its model and brand to determine specific characteristics and usage details.
+Analyze the provided image of a boat to determine specific characteristics and usage details.
 
-Boat Brand: {boat_brand}
-Boat Model: {boat_model}
+{brand_info}
+{model_info}
 
-Your task is to classify the boat type, measure its dimensions, and determine its usage and auxiliary features.
+Your task is to classify the boat type, measure its dimensions, and determine its usage and auxiliary features based primarily on the visual analysis of the image. If brand and model information is provided, use it as additional context, but rely mainly on what you can observe in the image.
 
 Steps:
 1. **Identify Boat Type**: Examine the image to classify the boat into one of the following types: Flat Bottom, Multi-hull, Pontoon, RHIB, Semi-Displacement, or V-Bottom.

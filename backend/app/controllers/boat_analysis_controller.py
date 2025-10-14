@@ -17,8 +17,8 @@ class BoatAnalysisController:
                 return validation_error
 
             image_file = request.files["image"]
-            boat_brand = request.form.get("brand", "").strip()
-            boat_model = request.form.get("model", "").strip()
+            boat_brand = request.form.get("brand", "").strip() or ""
+            boat_model = request.form.get("model", "").strip() or ""
 
             if not ImageProcessingService.validate_image(
                 image_file, current_app.config["ALLOWED_EXTENSIONS"]

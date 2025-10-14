@@ -121,25 +121,38 @@ Parameters:
 ### Using curl:
 ```bash
 # Health check
-curl http://localhost:5000/api/v1/health
+curl http://localhost:5001/api/v1/health
 
-# Analyze a boat image
-curl -X POST http://localhost:5000/api/v1/analyze \
+# Analyze a boat image with brand and model
+curl -X POST http://localhost:5001/api/v1/analyze \
   -F "image=@boat_image.jpg" \
   -F "brand=SeaCraft" \
   -F "model=X123"
+
+# Analyze a boat image with just the image (brand and model optional)
+curl -X POST http://localhost:5001/api/v1/analyze \
+  -F "image=@boat_image.jpg"
 ```
 
 ### Using Python requests:
 ```python
 import requests
 
-# Analyze boat image
+# Analyze boat image with brand and model
 with open('boat_image.jpg', 'rb') as f:
     response = requests.post(
-        'http://localhost:5000/api/v1/analyze',
+        'http://localhost:5001/api/v1/analyze',
         files={'image': f},
         data={'brand': 'SeaCraft', 'model': 'X123'}
+    )
+    result = response.json()
+    print(result)
+
+# Analyze boat image with just the image (brand and model optional)
+with open('boat_image.jpg', 'rb') as f:
+    response = requests.post(
+        'http://localhost:5001/api/v1/analyze',
+        files={'image': f}
     )
     result = response.json()
     print(result)
@@ -174,17 +187,19 @@ Environment variables in `.env`:
 You can test the API using one of the boat images in your workspace:
 
 ```bash
-# Using CATALINA 2585 QL PONTOON.jpg
-curl -X POST http://localhost:5000/api/v1/analyze \
-  -F "image=@CATALINA 2585 QL PONTOON.jpg" \
+# Test with brand and model (if you have these images)
+curl -X POST http://localhost:5001/api/v1/analyze \
+  -F "image=@CATALINA_2585_QL_PONTOON.jpg" \
   -F "brand=Catalina" \
   -F "model=2585 QL"
 
-# Using PHOTON P300.jpg
-curl -X POST http://localhost:5000/api/v1/analyze \
-  -F "image=@PHOTON P300.jpg" \
-  -F "brand=Photon" \
-  -F "model=P300"
+# Test with just an image (brand and model are optional)
+curl -X POST http://localhost:5001/api/v1/analyze \
+  -F "image=@boat_image.jpg"
+
+# Test with any boat image you have
+curl -X POST http://localhost:5001/api/v1/analyze \
+  -F "image=@your_boat_image.jpg"
 ```
 
 ## Development
