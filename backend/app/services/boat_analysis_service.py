@@ -97,26 +97,41 @@ Analyze the provided image of a boat to determine specific characteristics and u
 {brand_info}
 {model_info}
 
-Your task is to classify the boat type, measure its dimensions, and determine its usage and auxiliary features based primarily on the visual analysis of the image. If brand and model information is provided, use it as additional context, but rely mainly on what you can observe in the image.
+Your task is to classify the HULL_TYPE, measure its dimensions, and determine its usage and AUXiliary features based primarily on the visual analysis of the image. If brand and model information is provided, use it as additional context, but rely mainly on what you can observe in the image.
 
 Steps:
-1. **Identify Boat Type**: Examine the image to classify the boat into one of the following types: Flat Bottom, Multi-hull, Pontoon, RHIB, Semi-Displacement, or V-Bottom.
-2. **Measure Dimensions**: Determine the length, width, and beam of the boat in feet.
-3. **Determine Usage**: Assess if the boat is used for commercial purposes.
-4. **Check for Auxiliary**: Identify if the boat has any auxiliary features.
-5. **Error Handling**: If the image is unclear, not a boat, or if any other issue prevents analysis, provide an error response.
+1. **Identify HULL_TYPE**: Examine the image to classify the boat into one of the following types: Flat Bottom, Multi-hull, Pontoon, RHIB, Semi-Displacement, or V-Bottom.
+2. **Measure Dimensions**: Determine the LENGTH and BEAM of the boat in feet. Note: BEAM is the width of the boat at its widest point.
+3. **Estimate WEIGHT**: Provide an estimated WEIGHT of the vessel in pounds based on its size, type, and construction.
+4. **Assess HULL_COATING**: Evaluate the HULL_COATING condition (low, medium, or high quality/condition).
+5. **Determine Usage**: Assess if the boat is used for COMMERCIAL purposes.
+6. **Check for AUXiliary Features**: Identify if the boat has any AUXiliary features (YES/NO).
+7. **Identify Energy Equipment**: 
+   - ENERGY_PRODUCERS: List visible energy-producing equipment (e.g., solar panels, generators, wind turbines)
+   - ENERGY_CONSUMERS: List visible energy-consuming equipment (e.g., lights, electronics, motors)
+8. **Assess EQUIPMENT_CONDITION**:
+   - VESSEL_AGE: Estimate age category (0-5, 5-10, 10-20, 20-30, 30+ years)
+   - EQUIPMENT_AGE: Estimate EQUIPMENT_AGE category (0-5, 5-10, 10-20, 20-30, 30+ years)
+   - EQUIPMENT_CONDITION: Overall EQUIPMENT_CONDITION (poor, fair, good, excellent)
+9. **Error Handling**: If the image is unclear, not a boat, or if any other issue prevents analysis, provide an error response.
 
 Output Format:
 The output should be a JSON object with the following structure:
 
 ```json
 {{
-  "Boat Type": "<TYPE>",
-  "Length": "<LENGTH>",
-  "Width": "<WIDTH>",
-  "Beam": "<BEAM>",
-  "Aux": "<YES/NO>",
-  "Commercial": "<YES/NO>"
+  "HULL_TYPE": "<TYPE>",
+  "LENGTH": "<LENGTH>",
+  "BEAM": "<BEAM>",
+  "WEIGHT": "<WEIGHT_IN_POUNDS>",
+  "HULL_COATING": "<low|medium|high>",
+  "AUX": "<YES/NO>",
+  "COMMERCIAL": "<YES/NO>",
+  "ENERGY_PRODUCERS": "<EQUIPMENT_LIST>",
+  "ENERGY_CONSUMERS": "<EQUIPMENT_LIST>",
+  "VESSEL_AGE": "<0-5|5-10|10-20|20-30|30+>",
+  "EQUIPMENT_AGE": "<0-5|5-10|10-20|20-30|30+>",
+  "EQUIPMENT_CONDITION": "<poor|fair|good|excellent>"
 }}
 ```
 
@@ -187,12 +202,18 @@ Notes:
                 return analysis_result
 
             required_fields = [
-                "Boat Type",
-                "Length",
-                "Width",
-                "Beam",
-                "Aux",
-                "Commercial",
+                "HULL_TYPE",
+                "LENGTH",
+                "BEAM",
+                "WEIGHT",
+                "HULL_COATING",
+                "AUX",
+                "COMMERCIAL",
+                "ENERGY_PRODUCERS",
+                "ENERGY_CONSUMERS",
+                "VESSEL_AGE",
+                "EQUIPMENT_AGE",
+                "EQUIPMENT_CONDITION",
             ]
             for field in required_fields:
                 if field not in analysis_result:

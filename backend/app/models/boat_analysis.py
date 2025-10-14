@@ -12,11 +12,17 @@ class BoatAnalysis:
         
         # Analysis results
         self.boat_type: Optional[str] = None
-        self.length: Optional[str] = None
-        self.width: Optional[str] = None
-        self.beam: Optional[str] = None
-        self.aux: Optional[str] = None
-        self.commercial: Optional[str] = None
+        self.LENGTH: Optional[str] = None
+        self.BEAM: Optional[str] = None
+        self.WEIGHT: Optional[str] = None
+        self.hull_coating: Optional[str] = None
+        self.AUX: Optional[str] = None
+        self.COMMERCIAL: Optional[str] = None
+        self.energy_producers: Optional[str] = None
+        self.energy_consumers: Optional[str] = None
+        self.vessel_age: Optional[str] = None
+        self.equipment_age: Optional[str] = None
+        self.equipment_condition: Optional[str] = None
         
         # Error handling
         self.error_message: Optional[str] = None
@@ -39,12 +45,18 @@ class BoatAnalysis:
             }
         
         return {
-            "Boat Type": self.boat_type,
-            "Length": self.length,
-            "Width": self.width,
-            "Beam": self.beam,
-            "Aux": self.aux,
-            "Commercial": self.commercial
+            "HULL_TYPE": self.boat_type,
+            "LENGTH": self.LENGTH,
+            "BEAM": self.BEAM,
+            "WEIGHT": self.WEIGHT,
+            "HULL_COATING": self.hull_coating,
+            "AUX": self.AUX,
+            "COMMERCIAL": self.COMMERCIAL,
+            "ENERGY_PRODUCERS": self.energy_producers,
+            "ENERGY_CONSUMERS": self.energy_consumers,
+            "VESSEL_AGE": self.vessel_age,
+            "EQUIPMENT_AGE": self.equipment_age,
+            "EQUIPMENT_CONDITION": self.equipment_condition
         }
     
     @classmethod
@@ -61,11 +73,17 @@ class BoatAnalysis:
             analysis.error_message = analysis_result['ERROR']
             analysis.error_code = analysis_result.get('CODE', 'UNKNOWN')
         else:
-            analysis.boat_type = analysis_result.get('Boat Type')
-            analysis.length = analysis_result.get('Length')
-            analysis.width = analysis_result.get('Width')
-            analysis.beam = analysis_result.get('Beam')
-            analysis.aux = analysis_result.get('Aux')
-            analysis.commercial = analysis_result.get('Commercial')
+            analysis.boat_type = analysis_result.get('HULL_TYPE')
+            analysis.LENGTH = analysis_result.get('LENGTH')
+            analysis.BEAM = analysis_result.get('BEAM')
+            analysis.WEIGHT = analysis_result.get('WEIGHT')
+            analysis.hull_coating = analysis_result.get('HULL_COATING')
+            analysis.AUX = analysis_result.get('AUX')
+            analysis.COMMERCIAL = analysis_result.get('COMMERCIAL')
+            analysis.energy_producers = analysis_result.get('ENERGY_PRODUCERS')
+            analysis.energy_consumers = analysis_result.get('ENERGY_CONSUMERS')
+            analysis.vessel_age = analysis_result.get('VESSEL_AGE')
+            analysis.equipment_age = analysis_result.get('EQUIPMENT_AGE')
+            analysis.equipment_condition = analysis_result.get('EQUIPMENT_CONDITION')
         
         return analysis

@@ -5,10 +5,13 @@ AI-powered boat image analysis service with Flask backend using GitHub Models AP
 ## 🌟 Features
 
 ### Backend API (Flask)
-- **AI-Powered Analysis**: Uses GitHub Models API for boat image analysis
+- **AI-Powered Analysis**: Uses GitHub Models API for comprehensive boat image analysis
 - **Boat Classification**: Categorizes boats into types (Flat Bottom, Multi-hull, Pontoon, RHIB, Semi-Displacement, V-Bottom)
-- **Dimension Estimation**: Provides length, width, and beam measurements in feet
-- **Usage Detection**: Determines commercial vs recreational use and auxiliary features
+- **Dimension & WEIGHT Estimation**: Provides LENGTH, BEAM measurements in feet and WEIGHT estimation
+- **Hull Assessment**: Evaluates HULL_COATING condition (low, medium, high)
+- **Usage Detection**: Determines COMMERCIAL vs recreational use and AUXiliary features
+- **Energy Equipment Analysis**: Identifies ENERGY_PRODUCERS and consumers on the vessel
+- **EQUIPMENT_CONDITION Assessment**: Estimates VESSEL_AGE, EQUIPMENT_AGE, and overall condition
 - **RESTful API**: Clean REST endpoints for integration
 - **CORS Enabled**: Configured for cross-origin requests
 - **Error Handling**: Comprehensive error handling with structured responses
@@ -99,12 +102,20 @@ Parameters:
 **Response Format:**
 ```json
 {
-  "Boat Type": "V-Bottom",
-  "Length": "30",
-  "Width": "10", 
-  "Beam": "9",
-  "Aux": "YES",
-  "Commercial": "NO"
+  "
+  
+  ": "V-Bottom",
+  "LENGTH": "30",
+  "BEAM": "9",
+  "WEIGHT": "12000",
+  "HULL_COATING": "medium",
+  "AUX": "YES",
+  "COMMERCIAL": "NO",
+  "ENERGY_PRODUCERS": "Solar panels, Generator",
+  "ENERGY_CONSUMERS": "Navigation lights, Electronics, Bilge pump",
+  "VESSEL_AGE": "10-20",
+  "EQUIPMENT_AGE": "5-10",
+  "EQUIPMENT_CONDITION": "good"
 }
 ```
 
@@ -157,6 +168,46 @@ with open('boat_image.jpg', 'rb') as f:
     result = response.json()
     print(result)
 ```
+
+## Analysis Attributes
+
+The API analyzes boat images and returns the following attributes:
+
+### Basic Information
+- **HULL_TYPE**: Classification (Flat Bottom, Multi-hull, Pontoon, RHIB, Semi-Displacement, V-Bottom)
+- **LENGTH**: Vessel LENGTH in feet
+- **BEAM**: Vessel width at widest point in feet
+- **WEIGHT**: Estimated WEIGHT in pounds
+
+### Hull and Condition
+- **HULL_COATING**: Coating condition assessment
+  - `low`: Poor condition, needs maintenance
+  - `medium`: Adequate condition, some wear visible
+  - `high`: Excellent condition, well-maintained
+
+### Usage and Features
+- **COMMERCIAL**: Whether vessel is used for COMMERCIAL purposes (`YES`/`NO`)
+- **AUX**: Presence of AUXiliary features (`YES`/`NO`)
+
+### Energy Systems
+- **ENERGY_PRODUCERS**: Equipment that generates power (e.g., "Solar panels, Generator")
+- **ENERGY_CONSUMERS**: Equipment that consumes power (e.g., "Navigation lights, Electronics")
+
+### Equipment Assessment
+- **VESSEL_AGE**: Estimated age category
+  - `0-5`: 0-5 years old
+  - `5-10`: 5-10 years old  
+  - `10-20`: 10-20 years old
+  - `20-30`: 20-30 years old
+  - `30+`: Over 30 years old
+
+- **EQUIPMENT_AGE**: Age of onboard equipment (same categories as VESSEL_AGE)
+
+- **EQUIPMENT_CONDITION**: Overall EQUIPMENT_CONDITION
+  - `poor`: Significant wear, needs replacement
+  - `fair`: Functional but showing age
+  - `good`: Well-maintained, minor wear
+  - `excellent`: Like new condition
 
 ## Configuration
 

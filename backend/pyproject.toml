@@ -35,7 +35,7 @@ include = ["app*", "config*"]
 exclude = ["uploads*", "*.tests*"]
 
 [tool.black]
-line-length = 88
+line-LENGTH = 88
 target-version = ['py310']
 
 [tool.mypy]

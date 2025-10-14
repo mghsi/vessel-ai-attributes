@@ -106,7 +106,7 @@ class TelemetryDataProcessorAgent(BaseAgent):
         # Set docked conditions
         df.loc[~df["is_operating"], "speed_over_water"] = 0
         df.loc[~df["is_operating"], "engine_rpm"] = 0
-        df.loc[~df["is_operating"], "fuel_flow"] = 0.5  # Auxiliary power
+        df.loc[~df["is_operating"], "fuel_flow"] = 0.5  # AUXiliary power
 
         return df
 
@@ -376,17 +376,17 @@ class VoyageAnalyticsEngine(BaseAgent):
         # Estimate fuel tank capacity from boat profile
         profile = profile_data.get("normalized_profile", {})
         physical_specs = profile.get("physical_specifications", {})
-        length = physical_specs.get("length_ft", 25)
+        LENGTH = physical_specs.get("LENGTH_ft", 25)
 
         # Rough fuel tank capacity estimation
-        estimated_tank_capacity = length * 2  # Simplified: 2 gallons per foot
+        estimated_tank_capacity = LENGTH * 2  # Simplified: 2 gallons per foot
 
         for i, dwell in enumerate(dwell_sets):
             if not dwell:
                 continue
 
             duration_hours = dwell.get("duration_hours", 0)
-            avg_fuel_flow = dwell.get("avg_fuel_flow", 0.5)  # Auxiliary systems
+            avg_fuel_flow = dwell.get("avg_fuel_flow", 0.5)  # AUXiliary systems
 
             fuel_consumed_during_dwell = avg_fuel_flow * duration_hours
             refuel_amount = min(
@@ -399,7 +399,7 @@ class VoyageAnalyticsEngine(BaseAgent):
                     "start_time": dwell.get("start_time"),
                     "end_time": dwell.get("end_time"),
                     "duration_hours": duration_hours,
-                    "auxiliary_fuel_consumed_gallons": round(
+                    "AUXiliary_fuel_consumed_gallons": round(
                         fuel_consumed_during_dwell, 2
                     ),
                     "estimated_refuel_amount_gallons": round(refuel_amount, 2),
@@ -413,8 +413,8 @@ class VoyageAnalyticsEngine(BaseAgent):
             "dwell_details": dwell_results,
             "aggregate_totals": {
                 "total_dwell_hours": sum(d["duration_hours"] for d in dwell_results),
-                "total_auxiliary_fuel_gallons": sum(
-                    d["auxiliary_fuel_consumed_gallons"] for d in dwell_results
+                "total_AUXiliary_fuel_gallons": sum(
+                    d["AUXiliary_fuel_consumed_gallons"] for d in dwell_results
                 ),
                 "total_refuel_gallons": sum(
                     d["estimated_refuel_amount_gallons"] for d in dwell_results
@@ -446,10 +446,10 @@ class VoyageAnalyticsEngine(BaseAgent):
         dwell_totals = dwell_analytics.get("aggregate_totals", {})
 
         total_fuel = voyage_totals.get("total_fuel_gallons", 0) + dwell_totals.get(
-            "total_auxiliary_fuel_gallons", 0
+            "total_AUXiliary_fuel_gallons", 0
         )
         total_co2 = voyage_totals.get("total_co2_lbs", 0) + (
-            dwell_totals.get("total_auxiliary_fuel_gallons", 0) * 22.38
+            dwell_totals.get("total_AUXiliary_fuel_gallons", 0) * 22.38
         )
 
         return {
@@ -457,8 +457,8 @@ class VoyageAnalyticsEngine(BaseAgent):
             "total_co2_emissions_lbs": round(total_co2, 2),
             "total_co2_emissions_tons": round(total_co2 / 2000, 3),
             "operational_fuel_gallons": voyage_totals.get("total_fuel_gallons", 0),
-            "auxiliary_fuel_gallons": dwell_totals.get(
-                "total_auxiliary_fuel_gallons", 0
+            "AUXiliary_fuel_gallons": dwell_totals.get(
+                "total_AUXiliary_fuel_gallons", 0
             ),
             "fuel_breakdown_percentage": {
                 "operational": round(
@@ -466,9 +466,9 @@ class VoyageAnalyticsEngine(BaseAgent):
                     * 100,
                     1,
                 ),
-                "auxiliary": round(
+                "AUXiliary": round(
                     (
-                        dwell_totals.get("total_auxiliary_fuel_gallons", 0)
+                        dwell_totals.get("total_AUXiliary_fuel_gallons", 0)
                         / max(total_fuel, 0.1)
                     )
                     * 100,
@@ -579,7 +579,7 @@ class ReportChartGeneratorAgent(BaseAgent):
                 plt.title(
                     "Vessel Speed vs Fuel Consumption Rate",
                     fontsize=14,
-                    fontweight="bold",
+                    fontWEIGHT="bold",
                 )
                 plt.xlabel("Speed (knots)", fontsize=12)
                 plt.ylabel("Fuel Rate (gal/hr)", fontsize=12)
@@ -601,7 +601,7 @@ class ReportChartGeneratorAgent(BaseAgent):
                 power_values = power_curve.get("y_axis", {}).get("values", [])
 
                 plt.plot(speeds, power_values, "r-s", linewidth=2, markersize=6)
-                plt.title("Vessel Speed vs Shaft Power", fontsize=14, fontweight="bold")
+                plt.title("Vessel Speed vs Shaft Power", fontsize=14, fontWEIGHT="bold")
                 plt.xlabel("Speed (knots)", fontsize=12)
                 plt.ylabel("Shaft Power (HP)", fontsize=12)
                 plt.grid(True, alpha=0.3)
@@ -621,7 +621,7 @@ class ReportChartGeneratorAgent(BaseAgent):
                 thrust_values = thrust_curve.get("y_axis", {}).get("values", [])
 
                 plt.plot(speeds, thrust_values, "g-^", linewidth=2, markersize=6)
-                plt.title("Vessel Speed vs Thrust", fontsize=14, fontweight="bold")
+                plt.title("Vessel Speed vs Thrust", fontsize=14, fontWEIGHT="bold")
                 plt.xlabel("Speed (knots)", fontsize=12)
                 plt.ylabel("Thrust (lbs)", fontsize=12)
                 plt.grid(True, alpha=0.3)
@@ -655,7 +655,7 @@ class ReportChartGeneratorAgent(BaseAgent):
                 fuel_consumed = [v["fuel_consumed_gallons"] for v in voyage_details]
 
                 plt.bar(voyage_ids, fuel_consumed, color="skyblue", alpha=0.7)
-                plt.title("Fuel Consumption by Voyage", fontsize=14, fontweight="bold")
+                plt.title("Fuel Consumption by Voyage", fontsize=14, fontWEIGHT="bold")
                 plt.xlabel("Voyage ID", fontsize=12)
                 plt.ylabel("Fuel Consumed (gallons)", fontsize=12)
                 plt.grid(True, alpha=0.3, axis="y")
@@ -679,7 +679,7 @@ class ReportChartGeneratorAgent(BaseAgent):
                     linewidth=2,
                     markersize=8,
                 )
-                plt.title("Fuel Efficiency by Voyage", fontsize=14, fontweight="bold")
+                plt.title("Fuel Efficiency by Voyage", fontsize=14, fontWEIGHT="bold")
                 plt.xlabel("Voyage ID", fontsize=12)
                 plt.ylabel("Fuel Efficiency (nm/gal)", fontsize=12)
                 plt.grid(True, alpha=0.3)
@@ -703,12 +703,12 @@ class ReportChartGeneratorAgent(BaseAgent):
         try:
             breakdown = emissions_data.get("fuel_breakdown_percentage", {})
             operational = breakdown.get("operational", 0)
-            auxiliary = breakdown.get("auxiliary", 0)
+            AUXiliary = breakdown.get("AUXiliary", 0)
 
-            if operational + auxiliary > 0:
+            if operational + AUXiliary > 0:
                 plt.figure(figsize=(8, 8))
-                labels = ["Operational Fuel", "Auxiliary Fuel"]
-                sizes = [operational, auxiliary]
+                labels = ["Operational Fuel", "AUXiliary Fuel"]
+                sizes = [operational, AUXiliary]
                 colors = ["#ff9999", "#66b3ff"]
 
                 plt.pie(
@@ -718,7 +718,7 @@ class ReportChartGeneratorAgent(BaseAgent):
                     autopct="%1.1f%%",
                     startangle=90,
                 )
-                plt.title("Fuel Consumption Breakdown", fontsize=14, fontweight="bold")
+                plt.title("Fuel Consumption Breakdown", fontsize=14, fontWEIGHT="bold")
                 plt.axis("equal")
                 plt.tight_layout()
 
@@ -802,7 +802,7 @@ class ReportChartGeneratorAgent(BaseAgent):
         return {
             "vessel_name": vessel_identity.get("name", "Unnamed Vessel"),
             "vessel_type": f"{vessel_identity.get('builder_make', '')} {vessel_identity.get('class_model', '')}".strip(),
-            "vessel_specifications": f"{physical_specs.get('length_ft', 0)} ft x {physical_specs.get('beam_ft', 0)} ft {physical_specs.get('boat_type', '')}",
+            "vessel_specifications": f"{physical_specs.get('LENGTH_ft', 0)} ft x {physical_specs.get('BEAM_ft', 0)} ft {physical_specs.get('boat_type', '')}",
             "operational_summary": {
                 "total_operating_hours": totals.get("total_operating_hours", 0),
                 "total_distance_nautical_miles": totals.get("total_distance_nm", 0),
@@ -843,9 +843,9 @@ class ReportChartGeneratorAgent(BaseAgent):
             emissions = voyage_analytics.get("emissions_summary", {})
             breakdown = emissions.get("fuel_breakdown_percentage", {})
 
-            if breakdown.get("auxiliary", 0) > 20:
+            if breakdown.get("AUXiliary", 0) > 20:
                 findings.append(
-                    f"High auxiliary fuel consumption ({breakdown.get('auxiliary', 0):.1f}%) indicates potential for electrification"
+                    f"High AUXiliary fuel consumption ({breakdown.get('AUXiliary', 0):.1f}%) indicates potential for electrification"
                 )
 
             totals = voyage_analytics.get("voyage_analytics", {}).get(
@@ -877,14 +877,14 @@ class ReportChartGeneratorAgent(BaseAgent):
         )
         operational = boat_profile.get("operational_profile", {})
 
-        if operational.get("auxiliary_systems"):
+        if operational.get("AUXiliary_systems"):
             recommendations.append(
-                "Evaluate auxiliary system electrification for dwell periods to reduce emissions"
+                "Evaluate AUXiliary system electrification for dwell periods to reduce emissions"
             )
 
-        if operational.get("commercial_operation"):
+        if operational.get("COMMERCIAL_operation"):
             recommendations.append(
-                "Explore commercial incentives for fuel efficiency improvements and emission reductions"
+                "Explore COMMERCIAL incentives for fuel efficiency improvements and emission reductions"
             )
 
         return recommendations

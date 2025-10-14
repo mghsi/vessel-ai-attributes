@@ -72,8 +72,8 @@ def start_agentic_workflow():
             "class_model": "required",
             "name": "optional",
             "mmsi": "optional",
-            "length": optional_number,
-            "beam": optional_number,
+            "LENGTH": optional_number,
+            "BEAM": optional_number,
             "boat_type": "optional"
         }
     }

@@ -138,7 +138,7 @@ class BoatImageAnalyzerAgent(BaseAgent):
     ) -> Dict[str, Any]:
         """Process manually entered boat data"""
         required_fields = ["builder_make", "class_model"]
-        optional_fields = ["name", "mmsi", "length", "beam", "boat_type"]
+        optional_fields = ["name", "mmsi", "LENGTH", "BEAM", "boat_type"]
 
         # Validate required fields
         missing_fields = [
@@ -195,8 +195,8 @@ class BoatImageAnalyzerAgent(BaseAgent):
         enriched.update(
             {
                 "inferred_specifications": {
-                    "estimated_length": self._estimate_length(manual_data),
-                    "estimated_beam": self._estimate_beam(manual_data),
+                    "estimated_LENGTH": self._estimate_LENGTH(manual_data),
+                    "estimated_BEAM": self._estimate_BEAM(manual_data),
                     "likely_boat_type": self._infer_boat_type(manual_data),
                 },
                 "confidence_level": "manual_input_with_inference",
@@ -211,7 +211,7 @@ class BoatImageAnalyzerAgent(BaseAgent):
         """Generate suggestions for user review"""
         suggestions = [
             "Please review the identified boat specifications",
-            "Confirm the boat type classification is correct",
+            "Confirm the HULL_TYPE classification is correct",
             "Verify the dimensions match your vessel",
         ]
 
@@ -220,18 +220,18 @@ class BoatImageAnalyzerAgent(BaseAgent):
 
         return suggestions
 
-    def _estimate_length(self, data: Dict[str, Any]) -> float:
-        """Estimate boat length from available data"""
+    def _estimate_LENGTH(self, data: Dict[str, Any]) -> float:
+        """Estimate boat LENGTH from available data"""
         # Placeholder estimation logic
-        return data.get("length", 25.0)
+        return data.get("LENGTH", 25.0)
 
-    def _estimate_beam(self, data: Dict[str, Any]) -> float:
-        """Estimate boat beam from available data"""
+    def _estimate_BEAM(self, data: Dict[str, Any]) -> float:
+        """Estimate boat BEAM from available data"""
         # Placeholder estimation logic
-        return data.get("beam", 8.0)
+        return data.get("BEAM", 8.0)
 
     def _infer_boat_type(self, data: Dict[str, Any]) -> str:
-        """Infer boat type from available data"""
+        """Infer HULL_TYPE from available data"""
         # Placeholder inference logic
         return data.get("boat_type", "V-Bottom")
 
@@ -286,7 +286,7 @@ class BoatProfileBuilderAgent(BaseAgent):
                 "type": "multiple_choice",
                 "options": [
                     "Recreation",
-                    "Commercial Fishing",
+                    "COMMERCIAL Fishing",
                     "Transportation",
                     "Research",
                     "Other",
@@ -331,7 +331,7 @@ class BoatProfileBuilderAgent(BaseAgent):
     async def _simulate_usage_responses(self) -> Dict[str, Any]:
         """Simulate user responses for demonstration"""
         return {
-            "primary_use": "Commercial Fishing",
+            "primary_use": "COMMERCIAL Fishing",
             "operating_hours": 8,
             "operating_season": 8,
             "typical_load": 75,
@@ -350,29 +350,24 @@ class BoatProfileBuilderAgent(BaseAgent):
                 "mmsi": boat_specs.get("mmsi", ""),
             },
             "physical_specifications": {
-                "length_ft": (
-                    float(boat_specs.get("Length", "0").replace(" ft", ""))
-                    if "Length" in boat_specs
-                    else boat_specs.get("length", 0)
+                "LENGTH_ft": (
+                    float(boat_specs.get("LENGTH", "0").replace(" ft", ""))
+                    if "LENGTH" in boat_specs
+                    else boat_specs.get("LENGTH", 0)
                 ),
-                "beam_ft": (
-                    float(boat_specs.get("Beam", "0").replace(" ft", ""))
-                    if "Beam" in boat_specs
-                    else boat_specs.get("beam", 0)
-                ),
-                "width_ft": (
-                    float(boat_specs.get("Width", "0").replace(" ft", ""))
-                    if "Width" in boat_specs
-                    else boat_specs.get("width", 0)
+                "BEAM_ft": (
+                    float(boat_specs.get("BEAM", "0").replace(" ft", ""))
+                    if "BEAM" in boat_specs
+                    else boat_specs.get("BEAM", 0)
                 ),
                 "boat_type": boat_specs.get(
-                    "Boat Type", boat_specs.get("boat_type", "Unknown")
+                    "HULL_TYPE", boat_specs.get("boat_type", "Unknown")
                 ),
             },
             "operational_profile": {
                 "primary_use": usage_responses.get("primary_use"),
-                "commercial_operation": boat_specs.get("Commercial", "NO") == "YES",
-                "auxiliary_systems": boat_specs.get("Aux", "NO") == "YES",
+                "COMMERCIAL_operation": boat_specs.get("COMMERCIAL", "NO") == "YES",
+                "AUXiliary_systems": boat_specs.get("AUX", "NO") == "YES",
                 "daily_operating_hours": usage_responses.get("operating_hours"),
                 "seasonal_months": usage_responses.get("operating_season"),
                 "typical_load_percentage": usage_responses.get("typical_load"),
@@ -400,20 +395,20 @@ class BoatProfileBuilderAgent(BaseAgent):
 
         # Physical attributes
         physical = profile.get("physical_specifications", {})
-        if physical.get("length_ft"):
+        if physical.get("LENGTH_ft"):
             attributes.append(
                 {
                     "category": "Physical",
-                    "name": "Length",
-                    "value": f"{physical['length_ft']} ft",
+                    "name": "LENGTH",
+                    "value": f"{physical['LENGTH_ft']} ft",
                 }
             )
-        if physical.get("beam_ft"):
+        if physical.get("BEAM_ft"):
             attributes.append(
                 {
                     "category": "Physical",
-                    "name": "Beam",
-                    "value": f"{physical['beam_ft']} ft",
+                    "name": "BEAM",
+                    "value": f"{physical['BEAM_ft']} ft",
                 }
             )
         if physical.get("boat_type"):
@@ -465,24 +460,24 @@ class PerformanceCurveGeneratorAgent(BaseAgent):
         physical_specs = normalized_profile.get("physical_specifications", {})
 
         # Extract vessel parameters
-        length_ft = physical_specs.get("length_ft", 30)
-        beam_ft = physical_specs.get("beam_ft", 10)
+        LENGTH_ft = physical_specs.get("LENGTH_ft", 30)
+        BEAM_ft = physical_specs.get("BEAM_ft", 10)
         boat_type = physical_specs.get("boat_type", "RHIB")
 
         # Convert to metric
-        length_m = length_ft * 0.3048
-        beam_m = beam_ft * 0.3048
+        LENGTH_m = LENGTH_ft * 0.3048
+        BEAM_m = BEAM_ft * 0.3048
 
         # Estimate displacement and other parameters
-        displacement = self._estimate_displacement(length_m, beam_m, boat_type)
+        displacement = self._estimate_displacement(LENGTH_m, BEAM_m, boat_type)
 
         # Generate detailed naval analysis
         naval_analysis = await self._generate_naval_analysis(
-            length_m, beam_m, displacement, boat_type
+            LENGTH_m, BEAM_m, displacement, boat_type
         )
 
         # Generate CSV performance data
-        csv_data = self._generate_csv_performance_data(length_m, beam_m, displacement)
+        csv_data = self._generate_csv_performance_data(LENGTH_m, BEAM_m, displacement)
 
         # Generate simplified curves for display
         display_curves = await self._generate_display_curves(normalized_profile)
@@ -494,7 +489,7 @@ class PerformanceCurveGeneratorAgent(BaseAgent):
             "csv_data": csv_data,
             "methodology": self._get_methodology_explanation(),
             "justification_table": self._get_justification_table(
-                length_m, beam_m, displacement
+                LENGTH_m, BEAM_m, displacement
             ),
             "download_available": True,
             "curve_metadata": {
@@ -515,7 +510,7 @@ class PerformanceCurveGeneratorAgent(BaseAgent):
     ) -> Dict[str, Any]:
         """Generate speed vs fuel consumption curve"""
         physical_specs = profile.get("physical_specifications", {})
-        length = physical_specs.get("length_ft", 25)
+        LENGTH = physical_specs.get("LENGTH_ft", 25)
         boat_type = physical_specs.get("boat_type", "V-Bottom")
 
         # Generate curve points based on boat characteristics
@@ -525,7 +520,7 @@ class PerformanceCurveGeneratorAgent(BaseAgent):
         for speed in speeds:
             # Simplified fuel consumption calculation
             base_consumption = self._calculate_base_fuel_consumption(
-                speed, length, boat_type
+                speed, LENGTH, boat_type
             )
             fuel_rates.append(round(base_consumption, 2))
 
@@ -533,7 +528,7 @@ class PerformanceCurveGeneratorAgent(BaseAgent):
             "curve_type": "speed_vs_fuel_rate",
             "x_axis": {"label": "Speed (knots)", "values": speeds},
             "y_axis": {"label": "Fuel Rate (gal/hr)", "values": fuel_rates},
-            "curve_equation": f"Fuel Rate = f(Speed, Length={length}ft, Type={boat_type})",
+            "curve_equation": f"Fuel Rate = f(Speed, LENGTH={LENGTH}ft, Type={boat_type})",
             "data_points": list(zip(speeds, fuel_rates)),
         }
 
@@ -542,22 +537,22 @@ class PerformanceCurveGeneratorAgent(BaseAgent):
     ) -> Dict[str, Any]:
         """Generate speed vs shaft power curve"""
         physical_specs = profile.get("physical_specifications", {})
-        length = physical_specs.get("length_ft", 25)
-        beam = physical_specs.get("beam_ft", 8)
+        LENGTH = physical_specs.get("LENGTH_ft", 25)
+        BEAM = physical_specs.get("BEAM_ft", 8)
 
         speeds = list(range(5, 31, 2))
         power_values = []
 
         for speed in speeds:
             # Power increases roughly with cube of speed
-            base_power = (speed**2.8) * (length / 25) * (beam / 8) * 10
+            base_power = (speed**2.8) * (LENGTH / 25) * (BEAM / 8) * 10
             power_values.append(round(base_power, 1))
 
         return {
             "curve_type": "speed_vs_shaft_power",
             "x_axis": {"label": "Speed (knots)", "values": speeds},
             "y_axis": {"label": "Shaft Power (HP)", "values": power_values},
-            "curve_equation": f"Power = f(Speed^2.8, Length={length}ft, Beam={beam}ft)",
+            "curve_equation": f"Power = f(Speed^2.8, LENGTH={LENGTH}ft, BEAM={BEAM}ft)",
             "data_points": list(zip(speeds, power_values)),
         }
 
@@ -566,21 +561,21 @@ class PerformanceCurveGeneratorAgent(BaseAgent):
     ) -> Dict[str, Any]:
         """Generate speed vs thrust curve"""
         physical_specs = profile.get("physical_specifications", {})
-        length = physical_specs.get("length_ft", 25)
+        LENGTH = physical_specs.get("LENGTH_ft", 25)
 
         speeds = list(range(5, 31, 2))
         thrust_values = []
 
         for speed in speeds:
             # Thrust generally decreases with speed for constant power
-            base_thrust = 1000 * (length / 25) / (speed / 10)
+            base_thrust = 1000 * (LENGTH / 25) / (speed / 10)
             thrust_values.append(round(base_thrust, 1))
 
         return {
             "curve_type": "speed_vs_thrust",
             "x_axis": {"label": "Speed (knots)", "values": speeds},
             "y_axis": {"label": "Thrust (lbs)", "values": thrust_values},
-            "curve_equation": f"Thrust = f(1/Speed, Length={length}ft)",
+            "curve_equation": f"Thrust = f(1/Speed, LENGTH={LENGTH}ft)",
             "data_points": list(zip(speeds, thrust_values)),
         }
 
@@ -605,10 +600,10 @@ class PerformanceCurveGeneratorAgent(BaseAgent):
         }
 
     def _calculate_base_fuel_consumption(
-        self, speed: float, length: float, boat_type: str
+        self, speed: float, LENGTH: float, boat_type: str
     ) -> float:
         """Calculate base fuel consumption for given parameters"""
-        # Base consumption factors by boat type
+        # Base consumption factors by HULL_TYPE
         type_factors = {
             "V-Bottom": 1.0,
             "Flat Bottom": 0.8,
@@ -620,38 +615,38 @@ class PerformanceCurveGeneratorAgent(BaseAgent):
 
         factor = type_factors.get(boat_type, 1.0)
         # Fuel consumption increases roughly with speed squared
-        base_consumption = (speed**2.2) * (length / 25) * factor * 0.5
+        base_consumption = (speed**2.2) * (LENGTH / 25) * factor * 0.5
         return max(base_consumption, 2.0)  # Minimum 2 gal/hr
 
     def _estimate_displacement(
-        self, length_m: float, beam_m: float, boat_type: str
+        self, LENGTH_m: float, BEAM_m: float, boat_type: str
     ) -> float:
         """Estimate displacement based on vessel dimensions and type"""
         if boat_type.upper() == "RHIB":
             # RHIB displacement estimation: lighter than conventional boats
             volume_coefficient = 0.35  # RHIBs have lower Cb due to inflatable collar
         else:
-            volume_coefficient = 0.45  # General recreational/commercial boat
+            volume_coefficient = 0.45  # General recreational/COMMERCIAL boat
 
         # Estimated draft for RHIB (typically shallow)
-        draft_m = length_m * 0.08  # Conservative estimate
+        draft_m = LENGTH_m * 0.08  # Conservative estimate
 
-        # Displacement = Length × Beam × Draft × Cb × ρ_water
+        # Displacement = LENGTH × BEAM × Draft × Cb × ρ_water
         rho_water = 1025  # kg/m³ seawater density
-        displacement = length_m * beam_m * draft_m * volume_coefficient * rho_water
+        displacement = LENGTH_m * BEAM_m * draft_m * volume_coefficient * rho_water
 
         return displacement  # kg
 
     async def _generate_naval_analysis(
-        self, length_m: float, beam_m: float, displacement: float, boat_type: str
+        self, LENGTH_m: float, BEAM_m: float, displacement: float, boat_type: str
     ) -> str:
         """Generate detailed naval architecture analysis using GitHub Models API"""
 
         prompt = f"""Act as a senior naval architect and marine systems performance engineer. 
 
 Vessel Specifications:
-- Length: {length_m:.2f} m ({length_m/0.3048:.1f} ft)
-- Beam: {beam_m:.2f} m ({beam_m/0.3048:.1f} ft)
+- LENGTH: {LENGTH_m:.2f} m ({LENGTH_m/0.3048:.1f} ft)
+- BEAM: {BEAM_m:.2f} m ({BEAM_m/0.3048:.1f} ft)
 - Type: {boat_type}
 - Estimated Displacement: {displacement:.0f} kg
 
@@ -695,7 +690,7 @@ Focus on technical rigor and practical applicability for baseline profiling."""
             return f"Naval analysis error: {str(e)} - using simplified model"
 
     def _generate_csv_performance_data(
-        self, length_m: float, beam_m: float, displacement: float
+        self, LENGTH_m: float, BEAM_m: float, displacement: float
     ) -> str:
         """Generate CSV performance data using Holtrop-Mennen simplified approach"""
 
@@ -707,8 +702,8 @@ Focus on technical rigor and practical applicability for baseline profiling."""
         nu = 1.19e-6  # kinematic viscosity of seawater at 15°C
 
         # Vessel parameters
-        wetted_surface = self._estimate_wetted_surface(length_m, beam_m, displacement)
-        service_speed_ms = self._estimate_service_speed(length_m)
+        wetted_surface = self._estimate_wetted_surface(LENGTH_m, BEAM_m, displacement)
+        service_speed_ms = self._estimate_service_speed(LENGTH_m)
 
         # Generate data from 0 to service speed in 0.25 m/s increments
         speed = 0.0
@@ -720,7 +715,7 @@ Focus on technical rigor and practical applicability for baseline profiling."""
                 battery_demand_W = 0
             else:
                 # Reynolds number
-                Re = speed * length_m / nu
+                Re = speed * LENGTH_m / nu
 
                 # Frictional resistance coefficient (ITTC 1957)
                 Cf = 0.075 / (math.log10(Re) - 2) ** 2
@@ -732,7 +727,7 @@ Focus on technical rigor and practical applicability for baseline profiling."""
                 Rf = 0.5 * rho_water * speed**2 * wetted_surface * Cf * (1 + k1)
 
                 # Residual resistance (Holtrop-Mennen simplified)
-                Froude_number = speed / math.sqrt(g * length_m)
+                Froude_number = speed / math.sqrt(g * LENGTH_m)
                 if Froude_number < 0.4:
                     Cr_coeff = 0.001 * (Froude_number * 10) ** 3
                 else:
@@ -763,21 +758,21 @@ Focus on technical rigor and practical applicability for baseline profiling."""
         return "\n".join(csv_lines)
 
     def _estimate_wetted_surface(
-        self, length_m: float, beam_m: float, displacement: float
+        self, LENGTH_m: float, BEAM_m: float, displacement: float
     ) -> float:
         """Estimate wetted surface area"""
         # Simplified wetted surface estimation for RHIB
         # Using Froude's approximation with RHIB correction factor
-        draft_est = (displacement / (1025 * length_m * beam_m * 0.35)) ** (1 / 3)
+        draft_est = (displacement / (1025 * LENGTH_m * BEAM_m * 0.35)) ** (1 / 3)
 
         # Wetted surface approximation
-        S = length_m * (2 * draft_est + beam_m) * 0.85  # 0.85 factor for RHIB shape
+        S = LENGTH_m * (2 * draft_est + BEAM_m) * 0.85  # 0.85 factor for RHIB shape
         return S
 
-    def _estimate_service_speed(self, length_m: float) -> float:
-        """Estimate service speed based on vessel length"""
+    def _estimate_service_speed(self, LENGTH_m: float) -> float:
+        """Estimate service speed based on vessel LENGTH"""
         # Typical service speed for RHIB: 0.4-0.6 of hull speed
-        hull_speed_ms = 1.34 * math.sqrt(length_m)  # Theoretical hull speed
+        hull_speed_ms = 1.34 * math.sqrt(LENGTH_m)  # Theoretical hull speed
         service_speed_ms = hull_speed_ms * 0.5  # Conservative estimate
         return min(service_speed_ms, 15.0)  # Cap at reasonable speed
 
@@ -797,15 +792,15 @@ The methodology includes:
 """
 
     def _get_justification_table(
-        self, length_m: float, beam_m: float, displacement: float
+        self, LENGTH_m: float, BEAM_m: float, displacement: float
     ) -> Dict[str, Any]:
         """Generate justification table with formulas and assumptions"""
         return {
             "vessel_parameters": {
-                "length_m": f"{length_m:.2f}",
-                "beam_m": f"{beam_m:.2f}",
+                "LENGTH_m": f"{LENGTH_m:.2f}",
+                "BEAM_m": f"{BEAM_m:.2f}",
                 "displacement_kg": f"{displacement:.0f}",
-                "estimated_draft_m": f"{(displacement / (1025 * length_m * beam_m * 0.35))**(1/3):.2f}",
+                "estimated_draft_m": f"{(displacement / (1025 * LENGTH_m * BEAM_m * 0.35))**(1/3):.2f}",
             },
             "constants_used": {
                 "seawater_density": "1025 kg/m³",
