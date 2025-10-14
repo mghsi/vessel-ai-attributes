@@ -12,8 +12,8 @@ def create_app(config_name=None):
     app = Flask(__name__)
     app.config.from_object(config[config_name])
 
-    # Enable CORS for frontend communication
-    CORS(app, origins=["http://localhost:8080", "http://127.0.0.1:8080"])
+    # Enable CORS for cross-origin requests
+    CORS(app, origins=["http://localhost:*", "http://127.0.0.1:*"])
 
     # Ensure upload directory exists
     os.makedirs(app.config["UPLOAD_FOLDER"], exist_ok=True)

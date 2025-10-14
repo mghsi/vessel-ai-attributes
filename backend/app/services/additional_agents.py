@@ -484,7 +484,7 @@ class ReportChartGeneratorAgent(BaseAgent):
     def __init__(self):
         super().__init__(
             "ReportChartGenerator",
-            "Creates charting and reports in frontend-compatible format",
+            "Creates charting and reports in JSON-compatible format",
         )
 
     async def _execute_internal(self, context: WorkflowContext) -> Dict[str, Any]:
@@ -528,7 +528,7 @@ class ReportChartGeneratorAgent(BaseAgent):
                 "performance_curves_generated": True,
                 "voyage_analytics_complete": True,
                 "emissions_calculated": True,
-                "frontend_compatible": True,
+                "json_compatible": True,
             },
         }
 

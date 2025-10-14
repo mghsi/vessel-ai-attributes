@@ -1,36 +1,29 @@
-# 🚤 Boat Analyzer AI - Full Stack Application
+# 🚤 Boat Analyzer AI - Backend API
 
-AI-powered boat image analysis service with Vue.js frontend and Flask backend using GitHub Models API.
+AI-powered boat image analysis service with Flask backend using GitHub Models API.
 
 ## 🌟 Features
 
-### Frontend (Vue.js)
-- **Modern Web Interface**: Responsive Vue.js 3 application with beautiful UI
-- **Drag & Drop Upload**: Intuitive image upload with preview
-- **Real-time Analysis**: Live feedback and loading states
-- **Detailed Results**: Visual display of analysis results with icons and badges
-- **Mobile Responsive**: Works seamlessly on desktop and mobile devices
-
-### Backend (Flask API)
+### Backend API (Flask)
 - **AI-Powered Analysis**: Uses GitHub Models API for boat image analysis
 - **Boat Classification**: Categorizes boats into types (Flat Bottom, Multi-hull, Pontoon, RHIB, Semi-Displacement, V-Bottom)
 - **Dimension Estimation**: Provides length, width, and beam measurements in feet
 - **Usage Detection**: Determines commercial vs recreational use and auxiliary features
 - **RESTful API**: Clean REST endpoints for integration
-- **CORS Enabled**: Configured for frontend communication
+- **CORS Enabled**: Configured for cross-origin requests
 - **Error Handling**: Comprehensive error handling with structured responses
 
 ### Development
 - **Docker Support**: Full containerized development environment
-- **Hot Reload**: Both frontend and backend support live reloading
+- **Hot Reload**: Backend supports live reloading in development
 - **No Database**: Simplified proof-of-concept without persistence
 
 ## 🏗️ Architecture
 
-Full-stack application with separated frontend and backend:
+Flask-based REST API for boat image analysis:
 
 ```
-vessel-ai/
+vessel-ai-attributes/
 ├── backend/                   # Flask API Server
 │   ├── app/
 │   │   ├── controllers/      # Business logic controllers
@@ -39,17 +32,10 @@ vessel-ai/
 │   │   ├── views/           # API routes and blueprints
 │   │   └── app_factory.py   # Flask application factory
 │   ├── config/              # Configuration management
+│   ├── data/                # Sample data files
 │   ├── uploads/             # Image upload directory
 │   ├── main.py              # Application entry point
 │   └── pyproject.toml       # Python dependencies
-├── frontend/                 # Vue.js Web Application
-│   ├── src/
-│   │   ├── components/      # Vue components
-│   │   ├── services/        # API client services
-│   │   ├── App.vue          # Main application component
-│   │   └── main.js          # Application entry point
-│   ├── public/              # Static assets
-│   └── package.json         # Node.js dependencies
 ├── docker-compose.yml        # Development environment
 ├── Dockerfile               # Backend container image
 └── .env.docker              # Environment configuration
@@ -64,10 +50,8 @@ vessel-ai/
 
 ### Development Setup
 
-1. **Clone and configure environment:**
+1. **Configure environment:**
    ```bash
-   git clone <repository-url>
-   cd vessel-ai
    cp backend/example.env .env.docker
    # Edit .env.docker and add your GitHub PAT
    ```
@@ -78,7 +62,6 @@ vessel-ai/
    ```
 
 3. **Access the application:**
-   - **Frontend Web App**: http://localhost:8080
    - **Backend API**: http://localhost:5001
    - **Health Check**: http://localhost:5001/api/v1/health
 
