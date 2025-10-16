@@ -324,6 +324,12 @@ class BoatProfileBuilderAgent(BaseAgent):
                     "Variable",
                 ],
             },
+            {
+                "id": "fuel_type",
+                "question": "What type of fuel does the vessel primarily use?",
+                "type": "multiple_choice",
+                "options": ["marineDiesel", "gasoline", "hybrid", "electric", "other"],
+            },
         ]
 
         return questions
@@ -336,6 +342,7 @@ class BoatProfileBuilderAgent(BaseAgent):
             "operating_season": 8,
             "typical_load": 75,
             "operating_conditions": "Moderate seas",
+            "fuel_type": "marineDiesel",
         }
 
     async def _build_normalized_profile(
@@ -372,6 +379,7 @@ class BoatProfileBuilderAgent(BaseAgent):
                 "seasonal_months": usage_responses.get("operating_season"),
                 "typical_load_percentage": usage_responses.get("typical_load"),
                 "operating_conditions": usage_responses.get("operating_conditions"),
+                "fuel_type": usage_responses.get("fuel_type"),
             },
             "profile_metadata": {
                 "created_at": datetime.now().isoformat(),

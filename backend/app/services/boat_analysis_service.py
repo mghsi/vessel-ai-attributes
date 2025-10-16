@@ -88,16 +88,20 @@ class BoatAnalysisService:
 
     def _build_analysis_prompt(self, boat_brand: str, boat_model: str) -> str:
         """Build the analysis prompt for the AI model"""
-        brand_info = f"Boat Brand: {boat_brand}" if boat_brand else "Boat Brand: Unknown"
-        model_info = f"Boat Model: {boat_model}" if boat_model else "Boat Model: Unknown"
-        
+        brand_info = (
+            f"Boat Brand: {boat_brand}" if boat_brand else "Boat Brand: Unknown"
+        )
+        model_info = (
+            f"Boat Model: {boat_model}" if boat_model else "Boat Model: Unknown"
+        )
+
         return f"""
 Analyze the provided image of a boat to determine specific characteristics and usage details.
 
 {brand_info}
 {model_info}
 
-Your task is to classify the HULL_TYPE, measure its dimensions, and determine its usage and AUXiliary features based primarily on the visual analysis of the image. If brand and model information is provided, use it as additional context, but rely mainly on what you can observe in the image.
+Your task is to classify the HULL_TYPE, measure its dimensions, determine its usage and AUXiliary features, and predict the FUEL_TYPE based primarily on the visual analysis of the image. If brand and model information is provided, use it as additional context, but rely mainly on what you can observe in the image.
 
 Steps:
 1. **Identify HULL_TYPE**: Examine the image to classify the boat into one of the following types: Flat Bottom, Multi-hull, Pontoon, RHIB, Semi-Displacement, or V-Bottom.
@@ -106,14 +110,15 @@ Steps:
 4. **Assess HULL_COATING**: Evaluate the HULL_COATING condition (low, medium, or high quality/condition).
 5. **Determine Usage**: Assess if the boat is used for COMMERCIAL purposes.
 6. **Check for AUXiliary Features**: Identify if the boat has any AUXiliary features (YES/NO).
-7. **Identify Energy Equipment**: 
+7. **Predict FUEL_TYPE**: Based on the boat's size, type, visible features, and any brand/model information, predict the most likely fuel type from: gasoline, marineDiesel, hybrid, electric, or other.
+8. **Identify Energy Equipment**: 
    - ENERGY_PRODUCERS: List visible energy-producing equipment (e.g., solar panels, generators, wind turbines)
    - ENERGY_CONSUMERS: List visible energy-consuming equipment (e.g., lights, electronics, motors)
-8. **Assess EQUIPMENT_CONDITION**:
+9. **Assess EQUIPMENT_CONDITION**:
    - VESSEL_AGE: Estimate age category (0-5, 5-10, 10-20, 20-30, 30+ years)
    - EQUIPMENT_AGE: Estimate EQUIPMENT_AGE category (0-5, 5-10, 10-20, 20-30, 30+ years)
    - EQUIPMENT_CONDITION: Overall EQUIPMENT_CONDITION (poor, fair, good, excellent)
-9. **Error Handling**: If the image is unclear, not a boat, or if any other issue prevents analysis, provide an error response.
+10. **Error Handling**: If the image is unclear, not a boat, or if any other issue prevents analysis, provide an error response.
 
 Output Format:
 The output should be a JSON object with the following structure:
@@ -127,6 +132,7 @@ The output should be a JSON object with the following structure:
   "HULL_COATING": "<low|medium|high>",
   "AUX": "<YES/NO>",
   "COMMERCIAL": "<YES/NO>",
+  "FUEL_TYPE": "<gasoline|marineDiesel|hybrid|electric|other>",
   "ENERGY_PRODUCERS": "<EQUIPMENT_LIST>",
   "ENERGY_CONSUMERS": "<EQUIPMENT_LIST>",
   "VESSEL_AGE": "<0-5|5-10|10-20|20-30|30+>",
@@ -147,6 +153,7 @@ If an error occurs, use the following format:
 Notes:
 - Ensure all measurements are in feet.
 - Use the provided model and brand information to assist in determining the boat's characteristics.
+- For FUEL_TYPE prediction, consider boat size (smaller boats typically use gasoline, larger commercial vessels often use marine diesel), visible features (solar panels may indicate hybrid/electric), and boat type.
 - Consider edge cases where the image may not clearly depict a boat or where the model and brand information is insufficient.
 - Return ONLY the JSON object, no additional text.
 """
@@ -209,6 +216,7 @@ Notes:
                 "HULL_COATING",
                 "AUX",
                 "COMMERCIAL",
+                "FUEL_TYPE",
                 "ENERGY_PRODUCERS",
                 "ENERGY_CONSUMERS",
                 "VESSEL_AGE",
